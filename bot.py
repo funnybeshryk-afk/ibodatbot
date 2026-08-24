@@ -23,12 +23,11 @@ PAYME_LINK = os.getenv("PAYME_LINK", "")   # Payme kassangizdagi to'lov havolasi
 QR_CLICK_PATH = "assets/qr_click.png"
 QR_PAYME_PATH = "assets/qr_payme.png"
 
-# TODO: loyihangiz haqida qisqacha, aniq matn yozing
+# Diqqat: pastdagi matnni haqiqiy, tayyor matningiz bilan almashtiring — u to'g'ridan-to'g'ri
+# foydalanuvchiga ko'rinadi (placeholder/izoh emas, tayyor jumlalar bo'lishi kerak).
 ABOUT_TEXT = (
     "📖 <b>Ilova haqida</b>\n\n"
-    "Ushbu ilova — kundalik ibodat va diniy ehtiyojlar uchun mo'ljallangan bepul dastur "
-    "(bu yerga ilovaning asosiy funksiyalari haqida 2-3 gap yozing: namoz vaqtlari, azon, "
-    "Qur'on va h.k.).\n\n"
+    "Ibodat — namoz vaqtlari, azon va Qur'on bilan ishlash uchun bepul mobil dastur.\n\n"
     "Ilova to'liq bepul va reklamasiz ishlaydi. Serverlar, yangilanishlar va rivojlantirish "
     "uchun xarajatlar mavjud, shu sababli loyihani ixtiyoriy homiylik orqali qo'llab-quvvatlashingiz mumkin."
 )
@@ -50,33 +49,20 @@ router = Router()
 
 
 def main_menu_kb():
-    kb = InlineKeyboardBuilder()
-    kb.button(text="📖 Loyiha haqida", callback_data="about")
-    kb.button(text="🤲 Qo'llab-quvvatlash", callback_data="support")
-    kb.adjust(1)
-    return kb.as_markup()
-
-
-def about_kb():
-    kb = InlineKeyboardBuilder()
-    kb.button(text="⬅️ Orqaga", callback_data="back_main")
-    kb.adjust(1)
-    return kb.as_markup()
-
-
-def support_menu_kb():
+    # Barcha to'lov usullari birinchi ekranda darhol ko'rinadi — foydalanuvchi
+    # ilovadan bilib kelgan, qo'shimcha "O'qish/tushunish" bosqichi shart emas.
     kb = InlineKeyboardBuilder()
     kb.button(text="💳 Click orqali", callback_data="pay_click")
     kb.button(text="💳 Payme orqali", callback_data="pay_payme")
     kb.button(text="🔢 Karta raqami", callback_data="pay_card")
-    kb.button(text="⬅️ Orqaga", callback_data="back_main")
+    kb.button(text="ℹ️ Loyiha haqida", callback_data="about")
     kb.adjust(1)
     return kb.as_markup()
 
 
-def back_to_support_kb():
+def back_to_main_kb():
     kb = InlineKeyboardBuilder()
-    kb.button(text="⬅️ Orqaga", callback_data="support")
+    kb.button(text="⬅️ Orqaga", callback_data="back_main")
     kb.adjust(1)
     return kb.as_markup()
 
@@ -84,30 +70,20 @@ def back_to_support_kb():
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.answer(
-        f"Assalomu alaykum, {message.from_user.first_name}!\n\n"
-        "Botga xush kelibsiz. Quyidagi bo'limlardan birini tanlang:",
+        f"Assalomu alaykum, {message.from_user.first_name}!\n\n" + SUPPORT_INTRO,
         reply_markup=main_menu_kb(),
     )
 
 
 @router.callback_query(F.data == "about")
 async def cb_about(callback: CallbackQuery):
-    await callback.message.edit_text(ABOUT_TEXT, reply_markup=about_kb())
+    await callback.message.edit_text(ABOUT_TEXT, reply_markup=back_to_main_kb())
     await callback.answer()
 
 
 @router.callback_query(F.data == "back_main")
 async def cb_back_main(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "Quyidagi bo'limlardan birini tanlang:",
-        reply_markup=main_menu_kb(),
-    )
-    await callback.answer()
-
-
-@router.callback_query(F.data == "support")
-async def cb_support(callback: CallbackQuery):
-    await callback.message.edit_text(SUPPORT_INTRO, reply_markup=support_menu_kb())
+    await callback.message.edit_text(SUPPORT_INTRO, reply_markup=main_menu_kb())
     await callback.answer()
 
 
@@ -118,13 +94,13 @@ async def cb_pay_click(callback: CallbackQuery):
 
     if os.path.exists(QR_CLICK_PATH):
         await callback.message.answer_photo(
-            FSInputFile(QR_CLICK_PATH), caption=text, reply_markup=back_to_support_kb()
+            FSInputFile(QR_CLICK_PATH), caption=text, reply_markup=back_to_main_kb()
         )
         await callback.message.delete()
     else:
         await callback.message.edit_text(
             text + "\n\n(QR kod hali qo'shilmagan — assets/qr_click.png fayliga joylashtiring)",
-            reply_markup=back_to_support_kb(),
+            reply_markup=back_to_main_kb(),
         )
     await callback.answer()
 
@@ -136,13 +112,13 @@ async def cb_pay_payme(callback: CallbackQuery):
 
     if os.path.exists(QR_PAYME_PATH):
         await callback.message.answer_photo(
-            FSInputFile(QR_PAYME_PATH), caption=text, reply_markup=back_to_support_kb()
+            FSInputFile(QR_PAYME_PATH), caption=text, reply_markup=back_to_main_kb()
         )
         await callback.message.delete()
     else:
         await callback.message.edit_text(
             text + "\n\n(QR kod hali qo'shilmagan — assets/qr_payme.png fayliga joylashtiring)",
-            reply_markup=back_to_support_kb(),
+            reply_markup=back_to_main_kb(),
         )
     await callback.answer()
 
@@ -150,7 +126,7 @@ async def cb_pay_payme(callback: CallbackQuery):
 @router.callback_query(F.data == "pay_card")
 async def cb_pay_card(callback: CallbackQuery):
     text = CARD_TEXT_TEMPLATE.format(card=CARD_NUMBER, holder=CARD_HOLDER)
-    await callback.message.edit_text(text, reply_markup=back_to_support_kb())
+    await callback.message.edit_text(text, reply_markup=back_to_main_kb())
     await callback.answer()
 
 
