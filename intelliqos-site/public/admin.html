@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intelliqos — заявки и заказы</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F7FB; --surface:#FFFFFF; --surface-2:#EDF1F9; --text:#0B1220; --text-muted:#4B5567;
+    --accent:#2F6BFF; --border:#DCE2EF;
+    --new:#2F6BFF; --new-bg:#E9F0FF;
+    --contacted:#B5720A; --contacted-bg:#FBEBD4;
+    --closed:#5A6478; --closed-bg:#E7EAF1;
+    --paid:#1F9D63; --paid-bg:#E1F6EC;
+    --pending:#B5720A; --pending-bg:#FBEBD4;
+    --cancelled:#C0392B; --cancelled-bg:#FBE4E1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0A0F1C; --surface:#111A2C; --surface-2:#16213A; --text:#E9EDF8; --text-muted:#96A3C4; --border:#233150;
+      --new-bg:#152544; --contacted-bg:#2E2210; --closed-bg:#1C2334; --paid-bg:#0F2A1E; --pending-bg:#2E2210; --cancelled-bg:#331715;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums;}
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 24px 60px;}
+  h1{font-size:22px; margin:0 0 4px;}
+  .sub{color:var(--text-muted); font-size:14px; margin-bottom:24px;}
+  .login-card{max-width:360px; margin:80px auto; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;}
+  .login-card h2{font-size:17px; margin-top:0;}
+  input[type="password"], input[type="text"]{width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-family:inherit; font-size:14px; margin:10px 0 14px;}
+  button{font-family:inherit; font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:999px; border:1px solid transparent; background:var(--accent); color:#fff; cursor:pointer;}
+  button.ghost{background:transparent; border-color:var(--border); color:var(--text);}
+  button:disabled{opacity:0.5; cursor:default;}
+  .tabs{display:flex; gap:8px; margin-bottom:18px;}
+  .tab{padding:8px 16px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-size:13.5px; font-weight:700;}
+  .tab.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+  table{width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden;}
+  th, td{padding:11px 14px; text-align:left; font-size:13.5px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); background:var(--surface-2);}
+  tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:700;}
+  .pill-new, .pill-pending{background:var(--pending-bg); color:var(--pending);}
+  .pill-contacted, .pill-awaiting_gateway{background:var(--contacted-bg); color:var(--contacted);}
+  .pill-closed{background:var(--closed-bg); color:var(--closed);}
+  .pill-paid{background:var(--paid-bg); color:var(--paid);}
+  .pill-cancelled{background:var(--cancelled-bg); color:var(--cancelled);}
+  select{font-family:inherit; font-size:12.5px; padding:5px 8px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text);}
+  .toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;}
+  .empty{padding:40px; text-align:center; color:var(--text-muted);}
+  .wrap-x{overflow-x:auto;}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-card">
+  <h2>Вход в панель Intelliqos</h2>
+  <p style="color:var(--text-muted);font-size:13px;">Введите ADMIN_TOKEN из .env сервера.</p>
+  <input type="password" id="token-input" placeholder="Токен доступа">
+  <button onclick="doLogin()" style="width:100%;">Войти</button>
+</div>
+
+<div id="app" class="wrap" style="display:none;">
+  <h1>Заявки и заказы</h1>
+  <p class="sub">Intelliqos · внутренняя панель, не для клиентов</p>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-leads" onclick="switchTab('leads')">Заявки</div>
+    <div class="tab" id="tab-orders" onclick="switchTab('orders')">Заказы</div>
+    <div class="tab" id="tab-chat" onclick="switchTab('chat')">Диалоги с ассистентом</div>
+  </div>
+
+  <div class="toolbar">
+    <button class="ghost" onclick="loadAll()">Обновить</button>
+    <button class="ghost" onclick="logout()">Выйти</button>
+  </div>
+
+  <div class="wrap-x">
+    <table id="table-leads">
+      <thead><tr><th>#</th><th>Дата</th><th>Тип</th><th>Продукт / пакет</th><th>Контакт</th><th>Комментарий</th><th>Статус</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <table id="table-orders" style="display:none;">
+      <thead><tr><th>#</th><th>Дата</th><th>Продукт / пакет</th><th>Сумма</th><th>Оплата</th><th>Телефон</th><th>Статус</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <table id="table-chat" style="display:none;">
+      <thead><tr><th>#</th><th>Дата</th><th>Режим</th><th>Вопрос</th><th>Ответ</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  var TOKEN = sessionStorage.getItem('intelliqos_admin_token') || '';
+
+  function doLogin(){
+    var v = document.getElementById('token-input').value.trim();
+    if(!v) return;
+    TOKEN = v;
+    sessionStorage.setItem('intelliqos_admin_token', v);
+    tryEnter();
+  }
+  function logout(){
+    sessionStorage.removeItem('intelliqos_admin_token');
+    location.reload();
+  }
+  function authHeaders(){ return { 'Authorization': 'Bearer ' + TOKEN }; }
+
+  function tryEnter(){
+    fetch('/api/leads', { headers: authHeaders() }).then(function(r){
+      if(r.status === 401){ alert('Неверный токен'); return; }
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadAll();
+    });
+  }
+  if (TOKEN) tryEnter();
+
+  function switchTab(name){
+    document.getElementById('tab-leads').classList.toggle('active', name==='leads');
+    document.getElementById('tab-orders').classList.toggle('active', name==='orders');
+    document.getElementById('tab-chat').classList.toggle('active', name==='chat');
+    document.getElementById('table-leads').style.display = name==='leads' ? '' : 'none';
+    document.getElementById('table-orders').style.display = name==='orders' ? '' : 'none';
+    document.getElementById('table-chat').style.display = name==='chat' ? '' : 'none';
+  }
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function fmtDate(iso){ try{ return new Date(iso).toLocaleString('ru-RU'); }catch(e){ return iso; } }
+
+  function loadAll(){ loadLeads(); loadOrders(); loadChat(); }
+
+  function loadChat(){
+    fetch('/api/assistant', { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(data){
+      var tbody = document.querySelector('#table-chat tbody');
+      if(!data.logs || !data.logs.length){ tbody.innerHTML = '<tr><td colspan="5" class="empty">Диалогов пока нет</td></tr>'; return; }
+      tbody.innerHTML = data.logs.map(function(l){
+        return '<tr>' +
+          '<td class="mono">'+l.id+'</td>' +
+          '<td>'+fmtDate(l.created_at)+'</td>' +
+          '<td>'+(l.mode==='ai'?'ИИ':'Правила')+'</td>' +
+          '<td>'+esc(l.message)+'</td>' +
+          '<td>'+esc(l.reply)+'</td>' +
+          '</tr>';
+      }).join('');
+    });
+  }
+
+  function loadLeads(){
+    fetch('/api/leads', { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(data){
+      var tbody = document.querySelector('#table-leads tbody');
+      if(!data.leads || !data.leads.length){ tbody.innerHTML = '<tr><td colspan="7" class="empty">Заявок пока нет</td></tr>'; return; }
+      tbody.innerHTML = data.leads.map(function(l){
+        return '<tr>' +
+          '<td class="mono">'+l.id+'</td>' +
+          '<td>'+fmtDate(l.created_at)+'</td>' +
+          '<td>'+(l.kind==='install'?'Выезд':'Консультация')+'</td>' +
+          '<td>'+esc(l.product)+(l.tier? ' — '+esc(l.tier):'')+(l.price?'<br><span style="color:var(--text-muted)">'+esc(l.price)+'</span>':'')+'</td>' +
+          '<td>'+esc(l.name)+'<br><span class="mono">'+esc(l.contact)+'</span>'+(l.address?'<br><span style="color:var(--text-muted)">'+esc(l.address)+'</span>':'')+'</td>' +
+          '<td>'+esc(l.message)+'</td>' +
+          '<td>'+statusSelect('lead', l.id, l.status, ['new','contacted','closed'])+'</td>' +
+          '</tr>';
+      }).join('');
+    });
+  }
+
+  function loadOrders(){
+    fetch('/api/orders', { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(data){
+      var tbody = document.querySelector('#table-orders tbody');
+      if(!data.orders || !data.orders.length){ tbody.innerHTML = '<tr><td colspan="7" class="empty">Заказов пока нет</td></tr>'; return; }
+      tbody.innerHTML = data.orders.map(function(o){
+        return '<tr>' +
+          '<td class="mono">'+o.id+'</td>' +
+          '<td>'+fmtDate(o.created_at)+'</td>' +
+          '<td>'+esc(o.product)+' — '+esc(o.tier)+'</td>' +
+          '<td class="mono">'+Number(o.amount_uzs).toLocaleString('ru-RU')+' сум</td>' +
+          '<td>'+esc(o.payment_method)+'</td>' +
+          '<td class="mono">'+esc(o.phone)+'</td>' +
+          '<td>'+statusSelect('order', o.id, o.status, ['pending','awaiting_gateway','paid','cancelled'])+'</td>' +
+          '</tr>';
+      }).join('');
+    });
+  }
+
+  function statusSelect(kind, id, current, options){
+    var labels = { new:'Новая', contacted:'Связались', closed:'Закрыта', pending:'Ожидает', awaiting_gateway:'На оплате', paid:'Оплачен', cancelled:'Отменён' };
+    var opts = options.map(function(o){ return '<option value="'+o+'"'+(o===current?' selected':'')+'>'+labels[o]+'</option>'; }).join('');
+    return '<select onchange="updateStatus(\''+kind+'\','+id+',this.value)">'+opts+'</select> ' +
+      '<span class="pill pill-'+current+'">'+labels[current]+'</span>';
+  }
+
+  function updateStatus(kind, id, status){
+    var url = kind === 'lead' ? '/api/leads/' + id : '/api/orders/' + id;
+    fetch(url, {
+      method: 'PATCH',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+      body: JSON.stringify({ status: status })
+    }).then(function(){ loadAll(); });
+  }
+</script>
+</body>
+</html>

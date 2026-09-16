@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intelliqos — умные IT-решения для бизнеса</title>
+<meta name="description" content="VMPOS, сайты под ключ, Telegram-боты и приложения. Оплата на сайте или выезд с установкой и обучением.">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F7FB;
+    --surface:#FFFFFF;
+    --surface-2:#EDF1F9;
+    --text:#0B1220;
+    --text-muted:#4B5567;
+    --accent:#2F6BFF;
+    --accent-2:#63B3FF;
+    --onsite:#B5720A;
+    --onsite-bg:#FBEBD4;
+    --border:#DCE2EF;
+    --success:#1F9D63;
+    --danger:#C0392B;
+    --shadow: 0 1px 2px rgba(11,18,32,0.04), 0 8px 24px rgba(11,18,32,0.06);
+    --radius-s: 10px;
+    --radius-m: 16px;
+    --radius-l: 24px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0A0F1C;
+      --surface:#111A2C;
+      --surface-2:#16213A;
+      --text:#E9EDF8;
+      --text-muted:#96A3C4;
+      --accent:#5B9BFF;
+      --accent-2:#8FC4FF;
+      --onsite:#FFB84D;
+      --onsite-bg:#2E2210;
+      --border:#233150;
+      --success:#3ECF8E;
+      --danger:#E1685C;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0A0F1C;
+    --surface:#111A2C;
+    --surface-2:#16213A;
+    --text:#E9EDF8;
+    --text-muted:#96A3C4;
+    --accent:#5B9BFF;
+    --accent-2:#8FC4FF;
+    --onsite:#FFB84D;
+    --onsite-bg:#2E2210;
+    --border:#233150;
+    --success:#3ECF8E;
+    --danger:#E1685C;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Manrope', system-ui, -apple-system, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  h1,h2,h3,h4{font-family:'Unbounded','Manrope',sans-serif; margin:0; text-wrap:balance; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+  section{padding:88px 0;}
+  @media (max-width:720px){ section{padding:56px 0;} }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:500;
+  }
+  .eyebrow::before{content:""; width:16px; height:1px; background:var(--accent);}
+
+  /* NAV */
+  .nav{
+    position:sticky; top:0; z-index:40;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px; gap:24px;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text);}
+  .brand-badge{
+    width:42px; height:42px; border-radius:12px; background:#fff;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    box-shadow:var(--shadow); flex-shrink:0; padding:5px;
+  }
+  .brand-badge img{width:100%; height:100%; object-fit:contain;}
+  .brand-name{font-family:'Unbounded',sans-serif; font-weight:700; font-size:19px; letter-spacing:-0.01em;}
+  .brand-tag{display:block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.08em; color:var(--text-muted); text-transform:uppercase; margin-top:1px;}
+  .nav-links{display:flex; align-items:center; gap:32px; list-style:none; margin:0; padding:0; font-size:14.5px; font-weight:600;}
+  .nav-links a{text-decoration:none; color:var(--text-muted); transition:color .15s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{white-space:nowrap;}
+  .nav-toggle{display:none;}
+  @media (max-width:840px){
+    .nav-links{display:none;}
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:'Manrope',sans-serif; font-weight:700; font-size:14.5px;
+    padding:13px 22px; border-radius:999px; border:1px solid transparent;
+    cursor:pointer; text-decoration:none; transition:transform .12s ease, box-shadow .12s ease, background .15s;
+    white-space:nowrap;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn-primary{background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; box-shadow:0 6px 18px -6px color-mix(in srgb, var(--accent) 60%, transparent);}
+  .btn-primary:hover{box-shadow:0 8px 22px -6px color-mix(in srgb, var(--accent) 70%, transparent);}
+  .btn-ghost{background:transparent; color:var(--text); border-color:var(--border);}
+  .btn-ghost:hover{background:var(--surface-2);}
+  .btn-onsite{background:var(--onsite-bg); color:var(--onsite); border-color:color-mix(in srgb, var(--onsite) 35%, transparent);}
+  .btn-onsite:hover{filter:brightness(0.97);}
+  .btn-sm{padding:9px 16px; font-size:13.5px;}
+  .btn-block{width:100%;}
+  .btn-link{background:none; border:none; color:var(--accent); font-weight:700; font-size:13.5px; cursor:pointer; padding:6px 2px; text-decoration:underline; text-underline-offset:3px;}
+
+  /* HERO */
+  .hero{position:relative; overflow:hidden; padding-top:72px; padding-bottom:96px;}
+  #hero-canvas{position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:0.55;}
+  .hero .wrap{position:relative; z-index:1;}
+  .hero-inner{max-width:760px; padding-top:56px;}
+  .hero h1{font-size:clamp(34px,5.4vw,58px); font-weight:800; margin-top:18px; line-height:1.06;}
+  .hero h1 .accent{background:linear-gradient(135deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero p.lead{font-size:18px; color:var(--text-muted); max-width:600px; margin-top:20px;}
+  .hero-ctas{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .hero-facts{display:flex; gap:32px; margin-top:56px; flex-wrap:wrap;}
+  .hero-fact b{display:block; font-family:'Unbounded',sans-serif; font-size:22px;}
+  .hero-fact span{font-size:13px; color:var(--text-muted);}
+
+  /* SECTION HEAD */
+  .section-head{max-width:620px; margin-bottom:48px;}
+  .section-head h2{font-size:clamp(26px,3.4vw,36px); margin-top:14px; font-weight:700;}
+  .section-head p{color:var(--text-muted); font-size:16px; margin-top:12px;}
+
+  /* PRODUCTS */
+  .products-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:22px;}
+  @media (max-width:860px){ .products-grid{grid-template-columns:1fr;} }
+  .card-featured{grid-column:1 / -1; border-color:color-mix(in srgb, var(--accent) 45%, var(--border)); position:relative;}
+  .card-featured .tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:0 20px;}
+  .card-featured .tier-row{flex-direction:column; align-items:flex-start; gap:4px;}
+  .card-featured .tier-row .tier-price{text-align:left;}
+  @media (max-width:760px){ .card-featured .tiers{grid-template-columns:1fr;} }
+  .badge-featured{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff;}
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
+    padding:30px; display:flex; flex-direction:column; box-shadow:var(--shadow);
+  }
+  .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .card-icon{
+    width:52px; height:52px; border-radius:14px; flex-shrink:0;
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--surface)), color-mix(in srgb, var(--accent-2) 20%, var(--surface)));
+    display:flex; align-items:center; justify-content:center; color:var(--accent);
+  }
+  .badges{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
+  .badge{
+    font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:999px;
+    display:inline-flex; align-items:center; gap:5px; letter-spacing:0.01em;
+  }
+  .badge-digital{background:color-mix(in srgb, var(--accent) 14%, var(--surface)); color:var(--accent);}
+  .badge-onsite{background:var(--onsite-bg); color:var(--onsite);}
+  .card h3{font-size:21px; margin-top:20px; font-weight:700;}
+  .card p.desc{color:var(--text-muted); font-size:14.5px; margin-top:10px; flex-grow:0;}
+  .tiers{list-style:none; margin:20px 0 0; padding:0; border-top:1px solid var(--border);}
+  .tier-row{display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:13px 0; border-bottom:1px solid var(--border);}
+  .tier-row .tier-name{font-weight:600; font-size:14.5px;}
+  .tier-row .tier-meta{display:block; font-size:12px; color:var(--text-muted); margin-top:2px;}
+  .tier-row .tier-price{font-size:14.5px; font-weight:600; white-space:nowrap; text-align:right;}
+  .card-actions{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap;}
+  .card-actions .btn{flex:1;}
+  .card-footnote{margin-top:12px; text-align:center;}
+
+  /* CUSTOM CAPABILITIES */
+  .custom-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin-bottom:28px;}
+  .custom-tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m);
+    padding:20px; transition:border-color .15s, transform .12s;
+  }
+  .custom-tile:hover{border-color:var(--accent); transform:translateY(-2px);}
+  .custom-tile b{display:block; font-size:15px; margin-bottom:6px;}
+  .custom-tile span{font-size:13.5px; color:var(--text-muted); line-height:1.45;}
+  .custom-cta{
+    display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface));
+    border:1px solid var(--border); border-radius:var(--radius-l); padding:28px 32px;
+  }
+  .custom-cta h4{font-size:19px;}
+  .custom-cta p{color:var(--text-muted); font-size:14px; margin-top:6px;}
+
+  /* HOW */
+  .how-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; counter-reset:step;}
+  @media (max-width:860px){ .how-steps{grid-template-columns:1fr;} }
+  .step{position:relative; padding:28px 24px 24px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m);}
+  .step-num{font-family:'Unbounded',sans-serif; font-size:15px; font-weight:700; color:var(--accent); display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:color-mix(in srgb, var(--accent) 14%, var(--surface));}
+  .step h4{margin-top:16px; font-size:17px;}
+  .step p{margin-top:8px; color:var(--text-muted); font-size:14.5px;}
+
+  /* PAYMENT */
+  .pay-panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l); padding:36px; display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;}
+  .pay-methods{display:flex; gap:14px; flex-wrap:wrap;}
+  .pay-chip{
+    display:flex; align-items:center; gap:9px; padding:11px 18px; border-radius:12px;
+    background:var(--surface-2); border:1px solid var(--border); font-weight:700; font-size:14px;
+  }
+  .pay-dot{width:10px; height:10px; border-radius:50%; flex-shrink:0;}
+  .pay-note{color:var(--text-muted); font-size:13.5px; max-width:280px;}
+
+  /* CONTACT */
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  @media (max-width:860px){ .contact-grid{grid-template-columns:1fr;} }
+  .contact-actions{display:flex; flex-direction:column; gap:14px; margin-top:28px;}
+  .contact-action{
+    display:flex; align-items:center; gap:14px; padding:16px 18px; border:1px solid var(--border);
+    border-radius:var(--radius-m); text-decoration:none; color:var(--text); background:var(--surface);
+    transition:border-color .15s, transform .12s;
+  }
+  .contact-action:hover{border-color:var(--accent); transform:translateY(-1px);}
+  .contact-action .ico{width:38px; height:38px; border-radius:10px; background:color-mix(in srgb, var(--accent) 14%, var(--surface)); display:flex; align-items:center; justify-content:center; color:var(--accent); flex-shrink:0;}
+  .contact-action b{display:block; font-size:14.5px;}
+  .contact-action span{display:block; font-size:13px; color:var(--text-muted); margin-top:1px;}
+
+  .form-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l); padding:30px; box-shadow:var(--shadow);}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:13px; font-weight:700; margin-bottom:7px;}
+  .field input, .field textarea{
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text); font-family:'Manrope',sans-serif; font-size:14.5px;
+  }
+  .field textarea{resize:vertical; min-height:88px;}
+  .field input:focus, .field textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--border); padding:48px 0 32px;}
+  .foot-top{display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; padding-bottom:32px;}
+  .foot-cols{display:flex; gap:56px; flex-wrap:wrap;}
+  .foot-col h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:14px;}
+  .foot-col a{display:block; font-size:14.5px; text-decoration:none; color:var(--text); margin-bottom:10px;}
+  .foot-col a:hover{color:var(--accent);}
+  .foot-bottom{border-top:1px solid var(--border); padding-top:22px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--text-muted);}
+
+  /* MODAL */
+  .overlay{
+    position:fixed; inset:0; background:rgba(6,10,20,0.55); backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center; padding:20px; z-index:100;
+    opacity:0; pointer-events:none; transition:opacity .18s ease;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .modal{
+    background:var(--surface); border-radius:var(--radius-l); max-width:460px; width:100%;
+    max-height:88vh; overflow-y:auto; padding:30px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    transform:translateY(14px) scale(0.98); transition:transform .18s ease;
+  }
+  .overlay.open .modal{transform:translateY(0) scale(1);}
+  .modal-close{
+    position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%;
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .modal-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); font-weight:600;}
+  .modal h3{font-size:21px; margin-top:8px; padding-right:36px;}
+  .modal .price-line{display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding:14px 16px; background:var(--surface-2); border-radius:12px;}
+  .modal .price-line b{font-size:18px;}
+  .tier-select{display:flex; flex-direction:column; gap:8px; margin-top:18px;}
+  .tier-opt{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:border-color .12s, background .12s;}
+  .tier-opt input{accent-color:var(--accent);}
+  .tier-opt.selected{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 8%, var(--surface));}
+  .tier-opt .t-left{display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600;}
+  .tier-opt .t-price{font-weight:700; font-size:14px;}
+  .pay-select{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:18px;}
+  .pay-opt{display:flex; align-items:center; gap:8px; padding:11px 12px; border:1px solid var(--border); border-radius:10px; cursor:pointer; font-size:13.5px; font-weight:700;}
+  .pay-opt input{accent-color:var(--accent);}
+  .pay-opt.selected{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 8%, var(--surface));}
+  .modal-section-label{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-top:22px; margin-bottom:2px;}
+  .modal-submit{margin-top:24px;}
+  .demo-note{font-size:12px; color:var(--text-muted); text-align:center; margin-top:12px;}
+  .success-view{text-align:center; padding:12px 0 4px;}
+  .success-icon{width:56px; height:56px; border-radius:50%; background:color-mix(in srgb, var(--success) 16%, var(--surface)); color:var(--success); display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
+  .success-view h3{padding-right:0;}
+  .success-view p{color:var(--text-muted); font-size:14.5px; margin-top:10px; max-width:340px; margin-left:auto; margin-right:auto;}
+  .spinner{width:18px; height:18px; border-radius:50%; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .spinner{animation:none;}
+    *{transition-duration:0.01ms !important;}
+  }
+
+  ::selection{background:color-mix(in srgb, var(--accent) 30%, transparent);}
+
+  /* CHAT WIDGET */
+  .chat-launcher{
+    position:fixed; right:22px; bottom:22px; width:58px; height:58px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:60;
+    box-shadow:0 10px 28px -8px color-mix(in srgb, var(--accent) 65%, transparent);
+    transition:transform .15s ease;
+  }
+  .chat-launcher:hover{transform:scale(1.06);}
+  .chat-launcher .ico-close{display:none;}
+  .chat-launcher.open .ico-chat{display:none;}
+  .chat-launcher.open .ico-close{display:block;}
+  .chat-launcher.pulse::after{
+    content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--accent);
+    animation:chatPulse 2.2s ease-out infinite;
+  }
+  @keyframes chatPulse{ 0%{transform:scale(0.9); opacity:0.8;} 100%{transform:scale(1.35); opacity:0;} }
+
+  .chat-panel{
+    position:fixed; right:22px; bottom:92px; width:360px; max-width:calc(100vw - 44px);
+    height:min(520px, calc(100vh - 140px)); background:var(--surface); border:1px solid var(--border);
+    border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.28); z-index:60;
+    display:flex; flex-direction:column; overflow:hidden;
+    opacity:0; transform:translateY(16px) scale(0.97); pointer-events:none; transition:opacity .16s ease, transform .16s ease;
+  }
+  .chat-panel.open{opacity:1; transform:translateY(0) scale(1); pointer-events:auto;}
+  .chat-head{display:flex; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid var(--border);}
+  .chat-avatar{width:34px; height:34px; border-radius:9px; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:4px; flex-shrink:0; box-shadow:var(--shadow);}
+  .chat-head b{display:block; font-size:14px;}
+  .chat-head span{display:block; font-size:11.5px; color:var(--text-muted);}
+  .chat-messages{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px;}
+  .chat-msg{max-width:84%; padding:9px 13px; border-radius:14px; font-size:13.5px; line-height:1.45;}
+  .chat-msg.bot{background:var(--surface-2); align-self:flex-start; border-bottom-left-radius:4px;}
+  .chat-msg.user{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
+  .chat-msg.typing{display:flex; gap:4px; align-items:center; padding:12px 14px;}
+  .chat-msg.typing span{width:6px; height:6px; border-radius:50%; background:var(--text-muted); animation:chatTyping 1s infinite ease-in-out;}
+  .chat-msg.typing span:nth-child(2){animation-delay:.15s;}
+  .chat-msg.typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes chatTyping{0%,60%,100%{opacity:.3; transform:translateY(0);} 30%{opacity:1; transform:translateY(-3px);}}
+  .chat-input-row{display:flex; gap:8px; padding:12px; border-top:1px solid var(--border);}
+  .chat-input-row input{
+    flex:1; padding:10px 13px; border-radius:99px; border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text); font-family:'Manrope',sans-serif; font-size:13.5px;
+  }
+  .chat-input-row input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .chat-send{
+    width:38px; height:38px; border-radius:50%; border:none; background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  }
+  .chat-send:hover{background:color-mix(in srgb, var(--accent) 85%, black);}
+  @media (max-width:480px){
+    .chat-panel{right:12px; left:12px; width:auto; bottom:86px;}
+    .chat-launcher{right:16px; bottom:16px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .chat-launcher.pulse::after{ animation:none; display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#top" class="brand" id="top">
+      <span class="brand-badge"><img src="/assets/logo-icon.png" alt="Intelliqos"></span>
+      <span>
+        <span class="brand-name">Intelliqos</span>
+        <span class="brand-tag">Smart Solutions</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#products">Продукты</a></li>
+      <li><a href="#custom">Возможности</a></li>
+      <li><a href="#how">Как купить</a></li>
+      <li><a href="#payment">Оплата</a></li>
+      <li><a href="#contact">Контакты</a></li>
+    </ul>
+    <button class="btn btn-primary btn-sm nav-cta" onclick="openLeadModal({kind:'consult', product:'Общий вопрос', tier:'Консультация', price:'Бесплатно'})">Обсудить проект</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="wrap">
+      <div class="hero-inner">
+        <span class="eyebrow">IT-студия · Ташкент, Узбекистан</span>
+        <h1>Софт и сервисы, которые можно <span class="accent">купить прямо сейчас</span></h1>
+        <p class="lead">Intelliqos делает POS-системы, сайты, Telegram-ботов и приложения. Оплатите онлайн и получите доступ сразу — или закажите выезд специалиста с установкой и обучением персонала.</p>
+        <div class="hero-ctas">
+          <a href="#products" class="btn btn-primary">Смотреть продукты</a>
+          <button class="btn btn-ghost" onclick="openLeadModal({kind:'consult', product:'Общий вопрос', tier:'Бесплатная консультация', price:'Бесплатно'})">Бесплатная консультация</button>
+        </div>
+        <div class="hero-facts">
+          <div class="hero-fact"><b class="mono">5</b><span>готовых продуктов с ценой на сайте</span></div>
+          <div class="hero-fact"><b class="mono">10+</b><span>направлений разработки по запросу</span></div>
+          <div class="hero-fact"><b class="mono">4</b><span>способа оплаты на сайте</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="products">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Каталог</span>
+        <h2>Готовые продукты — с ценой и оплатой на сайте</h2>
+        <p>Ниже — 5 продуктов с фиксированной ценой, которые можно оплатить прямо сейчас. Это не весь список: кроме них разрабатываем практически любые IT-решения под задачу бизнеса — смотрите раздел «Индивидуальные решения» сразу под каталогом.</p>
+      </div>
+
+      <div class="products-grid">
+
+        <!-- VMPOS -->
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 11h18" stroke="currentColor" stroke-width="1.6"/><path d="M7 4h10l1.5 3h-13L7 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.5 15.5h3M7.5 17.8h5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span class="badges">
+              <span class="badge badge-digital">Цифровая поставка</span>
+              <span class="badge badge-onsite">Выезд и обучение</span>
+            </span>
+          </div>
+          <h3>VMPOS — касса и учёт</h3>
+          <p class="desc">Приём оплат, склад и аналитика продаж для магазинов, кафе и точек обслуживания. Работает на кассовом оборудовании или планшете.</p>
+          <ul class="tiers">
+            <li class="tier-row">
+              <span><span class="tier-name">Лицензия (1 точка)</span><span class="tier-meta">Активация сразу после оплаты</span></span>
+              <span class="tier-price mono">1 900 000 сум<br><span style="font-weight:400;font-size:11.5px;color:var(--text-muted)">/ мес</span></span>
+            </li>
+            <li class="tier-row">
+              <span><span class="tier-name">Установка под ключ</span><span class="tier-meta">Выезд, настройка оборудования, обучение персонала</span></span>
+              <span class="tier-price mono">3 900 000 сум<br><span style="font-weight:400;font-size:11.5px;color:var(--text-muted)">разово</span></span>
+            </li>
+          </ul>
+          <div class="card-actions">
+            <button class="btn btn-primary" onclick="openBuyModal({product:'VMPOS', tiers:[{name:'Лицензия (1 точка)', meta:'Скачивание и активация онлайн', price:'1 900 000 сум / мес', amount_uzs:1900000}]})">Купить и активировать</button>
+            <button class="btn btn-onsite" onclick="openLeadModal({kind:'install', product:'VMPOS', tier:'Установка под ключ', price:'3 900 000 сум (разово)'})">Заказать выезд</button>
+          </div>
+          <div class="card-footnote">
+            <button class="btn-link" onclick="openLeadModal({kind:'consult', product:'VMPOS', tier:'Демо-доступ', price:'Бесплатно'})">Запросить бесплатную демо-версию →</button>
+          </div>
+        </article>
+
+        <!-- Сайты -->
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 8.5h18" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="6.5" r="0.9" fill="currentColor"/><circle cx="8.6" cy="6.5" r="0.9" fill="currentColor"/></svg>
+            </span>
+            <span class="badges"><span class="badge badge-digital">Цифровая поставка</span></span>
+          </div>
+          <h3>Сайты под ключ</h3>
+          <p class="desc">Дизайн, вёрстка, интеграция оплаты и хостинг. Исходники и доступы передаются сразу после сдачи проекта.</p>
+          <ul class="tiers">
+            <li class="tier-row"><span><span class="tier-name">Лендинг</span><span class="tier-meta">Срок ~5 рабочих дней</span></span><span class="tier-price mono">от 3 500 000 сум</span></li>
+            <li class="tier-row"><span><span class="tier-name">Корпоративный сайт</span><span class="tier-meta">Срок ~10 рабочих дней</span></span><span class="tier-price mono">от 7 900 000 сум</span></li>
+            <li class="tier-row"><span><span class="tier-name">Интернет-магазин</span><span class="tier-meta">Срок ~20 рабочих дней</span></span><span class="tier-price mono">от 12 900 000 сум</span></li>
+          </ul>
+          <div class="card-actions">
+            <button class="btn btn-primary" onclick="openBuyModal({product:'Сайт под ключ', tiers:[{name:'Лендинг', meta:'Предоплата 30% · срок ~5 дней', price:'1 050 000 сум', amount_uzs:1050000},{name:'Корпоративный сайт', meta:'Предоплата 30% · срок ~10 дней', price:'2 370 000 сум', amount_uzs:2370000},{name:'Интернет-магазин', meta:'Предоплата 30% · срок ~20 дней', price:'3 870 000 сум', amount_uzs:3870000}]})">Оплатить предоплату</button>
+            <button class="btn btn-ghost" onclick="openLeadModal({kind:'consult', product:'Сайт под ключ', tier:'Обсуждение ТЗ', price:'Бесплатно'})">Обсудить ТЗ</button>
+          </div>
+        </article>
+
+        <!-- Боты -->
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 8V5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="4" r="1.3" fill="currentColor"/><circle cx="8.5" cy="14" r="1.3" fill="currentColor"/><circle cx="15.5" cy="14" r="1.3" fill="currentColor"/><path d="M2 12.5v3M22 12.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span class="badges"><span class="badge badge-digital">Цифровая поставка</span></span>
+          </div>
+          <h3>Telegram-боты любой сложности</h3>
+          <p class="desc">Приём заявок, оплата, CRM, рассылки и ИИ-диалоги — пишем бота под ваш сценарий.</p>
+          <ul class="tiers">
+            <li class="tier-row"><span><span class="tier-name">Простой бот</span><span class="tier-meta">FAQ, приём заявок</span></span><span class="tier-price mono">от 1 500 000 сум</span></li>
+            <li class="tier-row"><span><span class="tier-name">Бот с оплатой и CRM</span><span class="tier-meta">Интеграция с вашей системой</span></span><span class="tier-price mono">от 4 500 000 сум</span></li>
+            <li class="tier-row"><span><span class="tier-name">Сложный бот</span><span class="tier-meta">ИИ-диалоги, внешние интеграции</span></span><span class="tier-price mono">от 9 000 000 сум</span></li>
+          </ul>
+          <div class="card-actions">
+            <button class="btn btn-primary" onclick="openBuyModal({product:'Telegram-бот', tiers:[{name:'Простой бот', meta:'Предоплата 30%', price:'450 000 сум', amount_uzs:450000},{name:'Бот с оплатой и CRM', meta:'Предоплата 30%', price:'1 350 000 сум', amount_uzs:1350000},{name:'Сложный бот (AI)', meta:'Предоплата 30%', price:'2 700 000 сум', amount_uzs:2700000}]})">Оплатить предоплату</button>
+            <button class="btn btn-ghost" onclick="openLeadModal({kind:'consult', product:'Telegram-бот', tier:'Обсуждение сценария', price:'Бесплатно'})">Обсудить сценарий</button>
+          </div>
+        </article>
+
+        <!-- Приложения -->
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="7" y="2.5" width="10" height="19" rx="2.2" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span class="badges"><span class="badge badge-digital">Цифровая поставка</span></span>
+          </div>
+          <h3>Web и Android приложения</h3>
+          <p class="desc">MVP или полноценный продукт с бэкендом, авторизацией и админ-панелью.</p>
+          <ul class="tiers">
+            <li class="tier-row"><span><span class="tier-name">MVP</span><span class="tier-meta">Срок ~3–4 недели</span></span><span class="tier-price mono">от 15 000 000 сум</span></li>
+            <li class="tier-row"><span><span class="tier-name">Полноценное приложение</span><span class="tier-meta">Web + Android · ~2–3 месяца</span></span><span class="tier-price mono">от 30 000 000 сум</span></li>
+          </ul>
+          <div class="card-actions">
+            <button class="btn btn-primary" onclick="openBuyModal({product:'Приложение', tiers:[{name:'MVP', meta:'Предоплата 30% · старт разработки', price:'4 500 000 сум', amount_uzs:4500000},{name:'Полноценное приложение', meta:'Предоплата 30% · старт разработки', price:'9 000 000 сум', amount_uzs:9000000}]})">Оплатить и стартовать</button>
+            <button class="btn btn-ghost" onclick="openLeadModal({kind:'consult', product:'Приложение', tier:'Обсуждение проекта', price:'Бесплатно'})">Обсудить проект</button>
+          </div>
+        </article>
+
+        <!-- ИИ-помощники -->
+        <article class="card card-featured">
+          <div class="card-top">
+            <span class="card-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3a3 3 0 0 1 3 3v1a4 4 0 0 1 2 3.46V13a4 4 0 0 1-8 0v-2.54A4 4 0 0 1 11 7V6a3 3 0 0 1 1-2.24" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="9.5" cy="10.5" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10.5" r="0.9" fill="currentColor"/><path d="M12 17v2m-3 2h6M5 11H3.5M20.5 11H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span class="badges">
+              <span class="badge badge-featured">Новинка</span>
+              <span class="badge badge-digital">Подписка</span>
+            </span>
+          </div>
+          <h3>ИИ-помощники для бизнеса</h3>
+          <p class="desc">Тот же ассистент, что общается с вами в правом нижнем углу этого сайта прямо сейчас — можно попробовать перед покупкой. Отвечает клиентам в Telegram, WhatsApp или на сайте по вашему каталогу и сценариям, разгружая менеджеров.</p>
+          <ul class="tiers">
+            <li class="tier-row"><span class="tier-name">Базовый</span><span class="tier-meta">FAQ и каталог в Telegram/на сайте</span><span class="tier-price mono">3 000 000 сум + 690 000 <span style="font-weight:400;font-size:11.5px;color:var(--text-muted)">сум/мес</span></span></li>
+            <li class="tier-row"><span class="tier-name">Продвинутый</span><span class="tier-meta">CRM, эскалация на менеджера, аналитика диалогов</span><span class="tier-price mono">6 500 000 сум + 1 450 000 <span style="font-weight:400;font-size:11.5px;color:var(--text-muted)">сум/мес</span></span></li>
+            <li class="tier-row"><span class="tier-name">Корпоративный</span><span class="tier-meta">Для сотрудников, база знаний, несколько каналов</span><span class="tier-price mono">от 12 000 000 сум + от 2 800 000 <span style="font-weight:400;font-size:11.5px;color:var(--text-muted)">сум/мес</span></span></li>
+          </ul>
+          <div class="card-actions">
+            <button class="btn btn-primary" onclick="openBuyModal({product:'ИИ-помощник', tiers:[{name:'Базовый', meta:'Настройка разово · далее 690 000 сум/мес по счёту', price:'3 000 000 сум', amount_uzs:3000000},{name:'Продвинутый', meta:'Настройка разово · далее 1 450 000 сум/мес по счёту', price:'6 500 000 сум', amount_uzs:6500000},{name:'Корпоративный', meta:'Настройка разово · далее от 2 800 000 сум/мес по счёту', price:'12 000 000 сум', amount_uzs:12000000}]})">Оплатить настройку</button>
+            <button class="btn btn-ghost" onclick="openLeadModal({kind:'consult', product:'ИИ-помощник', tier:'Обсуждение сценария', price:'Бесплатно'})">Обсудить сценарий</button>
+          </div>
+          <div class="card-footnote">
+            <button class="btn-link" onclick="scrollToChat()">Попробовать ассистента сейчас →</button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="custom">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Возможности</span>
+        <h2>Не только эти пять продуктов</h2>
+        <p>Каталог выше — наши флагманские, уже упакованные решения. Помимо них команда разрабатывает практически любой софт под задачу бизнеса — вот основные направления.</p>
+      </div>
+      <div class="custom-grid">
+        <div class="custom-tile"><b>CRM и учёт клиентов</b><span>Своя система для отдела продаж, склада и клиентской базы — не только для точек с VMPOS.</span></div>
+        <div class="custom-tile"><b>Интеграция с 1С и сервисами</b><span>Синхронизация кассы, склада, бухгалтерии и внешних систем между собой.</span></div>
+        <div class="custom-tile"><b>Автоматизация процессов</b><span>Скрипты и сервисы, которые снимают рутину: отчёты, уведомления, документооборот.</span></div>
+        <div class="custom-tile"><b>Программы лояльности</b><span>Бонусные карты, скидки и персональные предложения, привязанные к кассе.</span></div>
+        <div class="custom-tile"><b>Дашборды и аналитика</b><span>Наглядные отчёты о продажах, посещаемости и клиентах в реальном времени.</span></div>
+        <div class="custom-tile"><b>iOS-приложения</b><span>Помимо Android — нативные приложения для iPhone и iPad.</span></div>
+        <div class="custom-tile"><b>Интернет-магазины и маркетплейсы</b><span>Каталог, оплата, доставка и личный кабинет покупателя под ключ.</span></div>
+        <div class="custom-tile"><b>QR-меню и самообслуживание</b><span>Для кафе и ресторанов — в связке с VMPOS или отдельно.</span></div>
+        <div class="custom-tile"><b>Техподдержка и сопровождение</b><span>Абонентское обслуживание, доработки и мониторинг после запуска.</span></div>
+      </div>
+      <div class="custom-cta">
+        <div>
+          <h4>Не нашли то, что нужно?</h4>
+          <p>Опишите задачу — предложим решение и точную стоимость в течение рабочего дня.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openLeadModal({kind:'consult', product:'Индивидуальное решение', tier:'Обсуждение задачи', price:'По запросу'})">Обсудить задачу</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" style="background:var(--surface-2);">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Процесс</span>
+        <h2>Как купить</h2>
+        <p>Три шага от выбора продукта до готового результата — без лишних созвонов, если это не требуется.</p>
+      </div>
+      <div class="how-steps">
+        <div class="step">
+          <span class="step-num">1</span>
+          <h4>Выберите продукт и пакет</h4>
+          <p>Сравните варианты в каталоге выше и решите, что нужно вашему бизнесу — от лицензии до полноценной разработки.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <h4>Оплатите на сайте или закажите выезд</h4>
+          <p>Payme, Click, Uzcard/Humo и карты — прямо здесь. Для VMPOS доступен выезд инженера с установкой на месте.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <h4>Получите доступ</h4>
+          <p>Цифровые продукты активируются сразу. При заказе выезда мы согласуем удобное время визита и обучения команды.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="payment">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Оплата</span>
+        <h2>Способы оплаты на сайте</h2>
+      </div>
+      <div class="pay-panel">
+        <div class="pay-methods">
+          <span class="pay-chip"><span class="pay-dot" style="background:#00B191;"></span>Payme</span>
+          <span class="pay-chip"><span class="pay-dot" style="background:#E8442B;"></span>Click</span>
+          <span class="pay-chip"><span class="pay-dot" style="background:#1E5DBF;"></span>Uzcard / Humo</span>
+          <span class="pay-chip"><span class="pay-dot" style="background:#3A3A3A;"></span>Visa / Mastercard</span>
+        </div>
+        <p class="pay-note" id="gateway-status-note">Онлайн-оплата подключается. Пока заказ передаётся менеджеру, который свяжется с вами для оформления оплаты.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div>
+          <span class="eyebrow">Контакты</span>
+          <h2 style="margin-top:14px;font-size:clamp(24px,3vw,32px);">Обсудим ваш проект</h2>
+          <p style="color:var(--text-muted);margin-top:12px;font-size:15.5px;">Ответим в течение рабочего дня. Для VMPOS выезд возможен по Ташкенту и области.</p>
+          <div class="contact-actions">
+            <a class="contact-action" href="tel:+998500114125">
+              <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.5 21 3 13.5 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+              <span><b class="mono">+998 50 011 41 25</b><span>Звонок или WhatsApp</span></span>
+            </a>
+            <a class="contact-action" href="https://t.me/+998500114125" target="_blank" rel="noopener">
+              <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 4 3 11.5l6 2M21 4l-4.5 16-6-6.5M21 4l-11 9.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></span>
+              <span><b>Telegram</b><span>Быстрые ответы на вопросы</span></span>
+            </a>
+            <a class="contact-action" href="mailto:intelliqos@gmail.com">
+              <span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="m4 6.5 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+              <span><b class="mono">intelliqos@gmail.com</b><span>Заявки и коммерческие предложения</span></span>
+            </a>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3 style="font-size:19px;">Быстрая заявка</h3>
+          <p style="color:var(--text-muted);font-size:14px;margin-top:6px;">Опишите задачу — подберём продукт и предложим варианты.</p>
+          <div style="margin-top:20px;">
+            <div class="field"><label for="qc-name">Имя</label><input id="qc-name" type="text" placeholder="Как к вам обращаться"></div>
+            <div class="field"><label for="qc-contact">Телефон или Telegram</label><input id="qc-contact" type="text" placeholder="+998 90 000 00 00 или @username"></div>
+            <div class="field"><label for="qc-msg">Что нужно?</label><textarea id="qc-msg" placeholder="Коротко о задаче: POS, сайт, бот или приложение"></textarea></div>
+          </div>
+          <button class="btn btn-primary btn-block" id="qc-submit" onclick="submitQuickContact()">Отправить заявку</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <a href="#top" class="brand">
+        <span class="brand-badge" style="width:36px;height:36px;"><img src="/assets/logo-icon.png" alt="Intelliqos"></span>
+        <span><span class="brand-name" style="font-size:16px;">Intelliqos</span><span class="brand-tag">Intelligent Future</span></span>
+      </a>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h5>Продукты</h5>
+          <a href="#products">VMPOS</a>
+          <a href="#products">Сайты под ключ</a>
+          <a href="#products">Telegram-боты</a>
+          <a href="#products">Web / Android</a>
+          <a href="#products">ИИ-помощники</a>
+        </div>
+        <div class="foot-col">
+          <h5>Компания</h5>
+          <a href="#how">Как купить</a>
+          <a href="#payment">Оплата</a>
+          <a href="#contact">Контакты</a>
+        </div>
+        <div class="foot-col">
+          <h5>Связь</h5>
+          <a href="tel:+998500114125" class="mono">+998 50 011 41 25</a>
+          <a href="mailto:intelliqos@gmail.com" class="mono">intelliqos@gmail.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> Intelliqos. Smart Solutions · Intelligent Future.</span>
+      <span>Ташкент, Узбекистан</span>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div id="chat-launcher" class="chat-launcher" onclick="toggleChat()" role="button" aria-label="Открыть чат с ИИ-ассистентом" tabindex="0">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="ico-chat"><path d="M4 12a8 8 0 1 1 3.2 6.4L4 19l1.1-3.3A7.96 7.96 0 0 1 4 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/></svg>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="ico-close"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+</div>
+
+<div id="chat-panel" class="chat-panel" role="dialog" aria-label="Чат с ИИ-ассистентом Intelliqos">
+  <div class="chat-head">
+    <span class="chat-avatar"><img src="/assets/logo-icon.png" alt=""></span>
+    <div>
+      <b>Ассистент Intelliqos</b>
+      <span id="chat-status">отвечает по каталогу продуктов</span>
+    </div>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="Спросите про цены, продукты, заказ…" maxlength="500" onkeydown="if(event.key==='Enter') sendChatMessage();">
+    <button class="chat-send" onclick="sendChatMessage()" aria-label="Отправить">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12h16m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- Modal engine ---------- */
+  var overlay = document.getElementById('overlay');
+  var modal = document.getElementById('modal');
+  var lastFocused = null;
+
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if(lastFocused) lastFocused.focus();
+  }
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+
+  function showModal(html){
+    lastFocused = document.activeElement;
+    modal.innerHTML = '<button class="modal-close" aria-label="Закрыть" onclick="closeModal()">' +
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' + html;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  /* ---------- Buy modal (digital purchase, tier select + payment) ---------- */
+  function openBuyModal(cfg){
+    var state = { tierIndex: 0, pay: 'payme' };
+
+    function render(){
+      var tier = cfg.tiers[state.tierIndex];
+      var tiersHtml = cfg.tiers.map(function(t, i){
+        return '<label class="tier-opt' + (i===state.tierIndex ? ' selected' : '') + '">' +
+          '<span class="t-left"><input type="radio" name="tier" ' + (i===state.tierIndex?'checked':'') + ' onchange="window.__buySetTier(' + i + ')"> ' +
+          '<span>' + escapeHtml(t.name) + '</span></span>' +
+          '<span class="t-price mono">' + escapeHtml(t.price) + '</span></label>';
+      }).join('');
+
+      var methods = [
+        {id:'payme', label:'Payme', color:'#00B191'},
+        {id:'click', label:'Click', color:'#E8442B'},
+        {id:'uzcard', label:'Uzcard/Humo', color:'#1E5DBF'},
+        {id:'card', label:'Visa/MC', color:'#3A3A3A'}
+      ];
+      var payHtml = methods.map(function(m){
+        return '<label class="pay-opt' + (state.pay===m.id?' selected':'') + '">' +
+          '<input type="radio" name="pay" ' + (state.pay===m.id?'checked':'') + ' onchange="window.__buySetPay(\'' + m.id + '\')">' +
+          '<span class="pay-dot" style="background:' + m.color + ';width:8px;height:8px;"></span>' + m.label + '</label>';
+      }).join('');
+
+      showModal(
+        '<span class="modal-eyebrow">Оформление заказа</span>' +
+        '<h3>' + escapeHtml(cfg.product) + '</h3>' +
+        (cfg.tiers.length > 1 ? '<div class="modal-section-label">Выберите пакет</div><div class="tier-select">' + tiersHtml + '</div>' :
+          '<p style="color:var(--text-muted);font-size:13.5px;margin-top:6px;">' + escapeHtml(tier.meta || '') + '</p>') +
+        '<div class="price-line"><span style="font-size:13.5px;color:var(--text-muted);">К оплате</span><b class="mono">' + escapeHtml(tier.price) + '</b></div>' +
+        '<div class="modal-section-label">Способ оплаты</div>' +
+        '<div class="pay-select">' + payHtml + '</div>' +
+        '<div class="field" style="margin-top:18px;"><label for="buy-phone">Телефон для чека</label><input id="buy-phone" type="text" placeholder="+998 90 000 00 00"></div>' +
+        '<button class="btn btn-primary btn-block modal-submit" id="buy-submit" onclick="window.__buySubmit()">Оплатить · ' + escapeHtml(tier.price) + '</button>' +
+        '<p class="demo-note" id="buy-gateway-note">' + gatewayNote(state.pay) + '</p>'
+      );
+    }
+
+    function gatewayNote(payId){
+      var st = window.__gatewayStatus || {};
+      var live = (payId === 'payme' && st.payme) || (payId === 'click' && st.click) ||
+                 ((payId === 'uzcard' || payId === 'card') && (st.payme || st.click));
+      return live
+        ? 'Вы будете перенаправлены на защищённую страницу оплаты.'
+        : 'Онлайн-оплата этим способом ещё подключается — заказ передадим менеджеру, оплату согласуем с вами лично.';
+    }
+
+    window.__buySetTier = function(i){ state.tierIndex = i; render(); };
+    window.__buySetPay = function(p){ state.pay = p; render(); };
+    window.__buySubmit = function(){
+      var btn = document.getElementById('buy-submit');
+      var tier = cfg.tiers[state.tierIndex];
+      var phone = (document.getElementById('buy-phone') || {}).value || '';
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Оформляем заказ…';
+
+      fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product: cfg.product, tier: tier.name, amount_uzs: tier.amount_uzs,
+          phone: phone, payment_method: state.pay, return_url: window.location.href
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data.ok) throw new Error(data.error || 'Ошибка сервера');
+        if (data.redirectUrl) {
+          btn.innerHTML = '<span class="spinner"></span> Переходим к оплате…';
+          window.location.href = data.redirectUrl;
+          return;
+        }
+        showModal(
+          '<div class="success-view">' +
+          '<div class="success-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+          '<h3>Заказ №' + data.orderId + ' принят</h3>' +
+          '<p>' + escapeHtml(cfg.product) + ' — ' + escapeHtml(tier.name) + ', ' + escapeHtml(tier.price) + '.<br>' +
+          escapeHtml(data.message || 'Мы свяжемся с вами для оформления оплаты.') + '</p>' +
+          '<button class="btn btn-ghost" style="margin-top:20px;" onclick="closeModal()">Готово</button>' +
+          '</div>'
+        );
+      })
+      .catch(function(err){
+        btn.disabled = false;
+        btn.innerHTML = 'Оплатить · ' + escapeHtml(tier.price);
+        alert('Не удалось оформить заказ: ' + err.message + '. Попробуйте ещё раз или напишите нам напрямую.');
+      });
+    };
+
+    render();
+  }
+
+  /* ---------- Lead / install modal ---------- */
+  function openLeadModal(cfg){
+    var isInstall = cfg.kind === 'install';
+    showModal(
+      '<span class="modal-eyebrow">' + (isInstall ? 'Заявка на выезд' : 'Заявка') + '</span>' +
+      '<h3>' + escapeHtml(cfg.product) + ' — ' + escapeHtml(cfg.tier) + '</h3>' +
+      '<div class="price-line"><span style="font-size:13.5px;color:var(--text-muted);">Стоимость</span><b class="mono">' + escapeHtml(cfg.price) + '</b></div>' +
+      '<div class="field" style="margin-top:20px;"><label for="lead-name">Имя</label><input id="lead-name" type="text" placeholder="Как к вам обращаться"></div>' +
+      '<div class="field"><label for="lead-phone">Телефон или Telegram</label><input id="lead-phone" type="text" placeholder="+998 90 000 00 00"></div>' +
+      (isInstall ? '<div class="field"><label for="lead-address">Город и адрес выезда</label><input id="lead-address" type="text" placeholder="Ташкент, ул. ..."></div>' : '') +
+      '<div class="field"><label for="lead-msg">Комментарий</label><textarea id="lead-msg" placeholder="' + (isInstall ? 'Удобное время визита, число касс/точек и т.д.' : 'Кратко опишите задачу') + '"></textarea></div>' +
+      '<button class="btn btn-primary btn-block modal-submit" id="lead-submit" onclick="submitLead(' + JSON.stringify(JSON.stringify(cfg)).replace(/"/g,'&quot;') + ')">Отправить заявку</button>' +
+      (isInstall ? '<p class="demo-note">Мы свяжемся для согласования даты выезда и обучения.</p>' : '')
+    );
+  }
+
+  function submitLead(cfgJson){
+    var cfg = JSON.parse(cfgJson);
+    var isInstall = cfg.kind === 'install';
+    var name = (document.getElementById('lead-name') || {}).value || '';
+    var phone = (document.getElementById('lead-phone') || {}).value || '';
+    var address = (document.getElementById('lead-address') || {}).value || '';
+    var msg = (document.getElementById('lead-msg') || {}).value || '';
+    var btn = document.getElementById('lead-submit');
+
+    if (!phone.trim()) {
+      alert('Укажите телефон или Telegram — иначе мы не сможем с вами связаться.');
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Отправляем…'; }
+
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        kind: cfg.kind, product: cfg.product, tier: cfg.tier, price: cfg.price,
+        name: name, contact: phone, address: address, message: msg
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      showModal(
+        '<div class="success-view">' +
+        '<div class="success-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+        '<h3>Заявка №' + (data.id || '') + ' принята</h3>' +
+        '<p>' + (isInstall
+          ? 'Мы свяжемся с вами, чтобы согласовать дату выезда и обучения.'
+          : 'Мы свяжемся с вами в течение рабочего дня.') + ' Если срочно — звоните +998 50 011 41 25.</p>' +
+        '<button class="btn btn-ghost" style="margin-top:20px;" onclick="closeModal()">Готово</button>' +
+        '</div>'
+      );
+    })
+    .catch(function(){
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Отправить заявку'; }
+      alert('Не удалось отправить заявку. Позвоните нам напрямую: +998 50 011 41 25 или напишите на intelliqos@gmail.com.');
+    });
+  }
+
+  function submitQuickContact(){
+    var btn = document.getElementById('qc-submit');
+    var name = document.getElementById('qc-name').value;
+    var contact = document.getElementById('qc-contact').value;
+    var msg = document.getElementById('qc-msg').value;
+    if (!contact.trim()) {
+      alert('Укажите телефон или Telegram для связи.');
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Отправляем…'; }
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: 'consult', product: 'Быстрая заявка (форма на сайте)', tier: '', price: '', name: name, contact: contact, message: msg })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Отправить заявку'; }
+      document.getElementById('qc-name').value = '';
+      document.getElementById('qc-contact').value = '';
+      document.getElementById('qc-msg').value = '';
+      alert('Заявка отправлена — мы свяжемся с вами в течение рабочего дня.');
+    })
+    .catch(function(){
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Отправить заявку'; }
+      alert('Не удалось отправить. Позвоните нам: +998 50 011 41 25.');
+    });
+  }
+
+  /* Подтягиваем реальный статус платёжных шлюзов, чтобы не обещать то, чего пока нет */
+  window.__gatewayStatus = { payme: false, click: false };
+  fetch('/api/status').then(function(r){ return r.json(); }).then(function(s){
+    window.__gatewayStatus = s;
+    var note = document.getElementById('gateway-status-note');
+    if (note && (s.payme || s.click)) {
+      note.textContent = 'Онлайн-оплата подключена и обрабатывается автоматически через защищённый платёжный шлюз.';
+    }
+  }).catch(function(){});
+
+  /* ---------- Чат с ИИ-ассистентом ---------- */
+  (function(){
+    var panel = document.getElementById('chat-panel');
+    var launcher = document.getElementById('chat-launcher');
+    var messagesEl = document.getElementById('chat-messages');
+    var input = document.getElementById('chat-input');
+    var history = [];
+    var opened = false;
+    var sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+    function addMessage(text, who){
+      var el = document.createElement('div');
+      el.className = 'chat-msg ' + who;
+      el.textContent = text;
+      messagesEl.appendChild(el);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return el;
+    }
+
+    function addTyping(){
+      var el = document.createElement('div');
+      el.className = 'chat-msg bot typing';
+      el.innerHTML = '<span></span><span></span><span></span>';
+      messagesEl.appendChild(el);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return el;
+    }
+
+    window.toggleChat = function(){
+      opened = !opened;
+      panel.classList.toggle('open', opened);
+      launcher.classList.toggle('open', opened);
+      launcher.classList.remove('pulse');
+      if (opened && !messagesEl.childElementCount) {
+        addMessage('Привет! Я ИИ-ассистент Intelliqos — тот самый продукт, который можно заказать для своего бизнеса. Спросите про цены, продукты или как оформить заказ.', 'bot');
+        input.focus();
+      }
+    };
+
+    window.scrollToChat = function(){
+      if (!opened) window.toggleChat();
+      input.focus();
+    };
+
+    window.sendChatMessage = function(){
+      var text = input.value.trim();
+      if (!text) return;
+      addMessage(text, 'user');
+      history.push({ role: 'user', content: text });
+      input.value = '';
+      var typingEl = addTyping();
+
+      fetch('/api/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, history: history, session_id: sessionId })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        typingEl.remove();
+        if (!data.ok) throw new Error(data.error || 'Ошибка');
+        addMessage(data.reply, 'bot');
+        history.push({ role: 'assistant', content: data.reply });
+      })
+      .catch(function(){
+        typingEl.remove();
+        addMessage('Не получилось ответить. Попробуйте ещё раз или напишите нам на +998 50 011 41 25.', 'bot');
+      });
+    };
+
+    // Лёгкий пульс на кнопке через пару секунд после загрузки — привлекает внимание,
+    // но не навязчиво (один раз, не мигает постоянно).
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTimeout(function(){ if (!opened) launcher.classList.add('pulse'); }, 2500);
+    }
+  })();
+
+  /* ---------- Hero node-network canvas ---------- */
+  (function(){
+    var canvas = document.getElementById('hero-canvas');
+    var ctx = canvas.getContext('2d');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var W, H, nodes = [];
+    var N = 34;
+
+    function colors(){
+      var cs = getComputedStyle(document.documentElement);
+      return { a: cs.getPropertyValue('--accent').trim(), b: cs.getPropertyValue('--accent-2').trim() };
+    }
+
+    function resize(){
+      var rect = canvas.parentElement.getBoundingClientRect();
+      W = canvas.width = rect.width * devicePixelRatio;
+      H = canvas.height = rect.height * devicePixelRatio;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+    }
+
+    function init(){
+      nodes = [];
+      for(var i=0;i<N;i++){
+        nodes.push({
+          x: Math.random()*W, y: Math.random()*H,
+          vx: (Math.random()-0.5)*0.25*devicePixelRatio, vy: (Math.random()-0.5)*0.25*devicePixelRatio,
+          r: (Math.random()*1.6+1.2)*devicePixelRatio
+        });
+      }
+    }
+
+    function frame(){
+      var c = colors();
+      ctx.clearRect(0,0,W,H);
+      var maxDist = 170*devicePixelRatio;
+      for(var i=0;i<nodes.length;i++){
+        var n = nodes[i];
+        if(!reduceMotion){ n.x += n.vx; n.y += n.vy; }
+        if(n.x < 0 || n.x > W) n.vx *= -1;
+        if(n.y < 0 || n.y > H) n.vy *= -1;
+        for(var j=i+1;j<nodes.length;j++){
+          var m = nodes[j];
+          var dx = n.x-m.x, dy = n.y-m.y;
+          var dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < maxDist){
+            ctx.strokeStyle = c.a;
+            ctx.globalAlpha = (1 - dist/maxDist) * 0.28;
+            ctx.lineWidth = devicePixelRatio;
+            ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(m.x,m.y); ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+      for(var k=0;k<nodes.length;k++){
+        var p = nodes[k];
+        ctx.fillStyle = k % 3 === 0 ? c.b : c.a;
+        ctx.globalAlpha = 0.75;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      if(!reduceMotion) requestAnimationFrame(frame);
+    }
+
+    resize(); init(); frame();
+    window.addEventListener('resize', function(){ resize(); init(); if(reduceMotion) frame(); });
+  })();
+</script>
+</body>
+</html>
