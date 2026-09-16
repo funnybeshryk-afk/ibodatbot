@@ -52,8 +52,10 @@ def main_menu_kb():
     # Barcha to'lov usullari birinchi ekranda darhol ko'rinadi — foydalanuvchi
     # ilovadan bilib kelgan, qo'shimcha "O'qish/tushunish" bosqichi shart emas.
     kb = InlineKeyboardBuilder()
-    kb.button(text="💳 Click orqali", callback_data="pay_click")
-    kb.button(text="💳 Payme orqali", callback_data="pay_payme")
+    # Click va Payme vaqtincha yashirilgan — merchant integratsiyasi hali tayyor emas.
+    # Qaytarish uchun quyidagi 2 qatorni ochib qo'ying:
+    # kb.button(text="💳 Click orqali", callback_data="pay_click")
+    # kb.button(text="💳 Payme orqali", callback_data="pay_payme")
     kb.button(text="🔢 Karta raqami", callback_data="pay_card")
     kb.button(text="ℹ️ Loyiha haqida", callback_data="about")
     kb.adjust(1)
